@@ -9,11 +9,11 @@ export const connectToDatabase = async () => {
         return console.log('MISSING MONGODB_URL')
     }
     if (isConnected) {
-        return console.log('');
+        return console.log('MONGO Connected to MONGODB');
     }
     try {
         await mongoose.connect(process.env.MONGODB_URL, {
-            dbName: 'devvault'
+            dbName: 'TASK MANAGER'
         })
         isConnected = true
     } catch (err) {
