@@ -5,10 +5,10 @@ import { createUser, deleteUser, updateUser } from '@/lib/actions/user.action'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
-
+console.log("im callig")
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
     const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
-
+    console.log(WEBHOOK_SECRET,'secret')
     if (!WEBHOOK_SECRET) {
         throw new Error('Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local')
     }
@@ -52,6 +52,7 @@ export async function POST(req: Request) {
     // Do something with the payload
     // For this guide, you simply log the payload to the console
     const { id } = evt.data;
+    console.log(evt.data,'ye h console')
     console.log(id,'haah bhai')
     const eventType = evt.type;
     console.log(eventType,'heyyy im here')
