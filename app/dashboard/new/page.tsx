@@ -16,8 +16,7 @@ import { createTask } from "@/lib/actions/task.actions";
 import { auth } from "@clerk/nextjs/server";
 
 export default async function NewTaskRoute() {
-  const { getToken, userId, sessionId } = await auth();
-
+  const { userId } = await auth();
 
   async function postData(formData: FormData) {
     "use server";

@@ -12,21 +12,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { editTask, fetchSpecificTaskForUser, } from "@/lib/actions/task.actions";
+import { editTask, fetchSpecificTaskForUser } from "@/lib/actions/task.actions";
 import { auth } from "@clerk/nextjs/server";
-
 
 interface EditTaskRouteProps {
   params: { id: string };
 }
 
 export default async function EditTaskRoute({ params }: EditTaskRouteProps) {
-  const { id  } = params;
-  const {userId} =  auth();
-  console.log(id,userId,'or bhai')
+  const { id } = params;
+  const { userId } = auth();
 
-  const task = await fetchSpecificTaskForUser(userId!,id);
-console.log(task,'ye h bhai')
+  const task = await fetchSpecificTaskForUser(userId!, id);
+
   async function postData(formData: FormData) {
     "use server";
     if (!userId) {
@@ -35,12 +33,12 @@ console.log(task,'ye h bhai')
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const dueDate = formData.get("dueDate") as string;
-    const isCompleted = formData.get("isCompleted") === "on"; 
+    const isCompleted = formData.get("isCompleted") === "on";
     const priority = formData.get("priority") as "Low" | "Medium" | "High";
 
     try {
       await editTask({
-        taskId:id,
+        taskId: id,
         dueDate: new Date(dueDate),
         priority,
         title,
@@ -48,10 +46,10 @@ console.log(task,'ye h bhai')
         user: userId,
         description,
       });
-      
+
       redirect(`/dashboard?status=success`);
     } catch (err) {
-        redirect(`/dashboard?status=success`);
+      redirect(`/dashboard?status=success`);
     }
   }
 
@@ -88,7 +86,11 @@ console.log(task,'ye h bhai')
               type="date"
               name="dueDate"
               required
-              defaultValue={task?.dueDate ? new Date(task.dueDate).toISOString().slice(0, 10) : ""}
+              defaultValue={
+                task?.dueDate
+                  ? new Date(task.dueDate).toISOString().slice(0, 10)
+                  : ""
+              }
             />
           </div>
           <div className="flex flex-col gap-y-2">
@@ -96,9 +98,8 @@ console.log(task,'ye h bhai')
             <input
               type="checkbox"
               name="isCompleted"
-               className="w-8 h-8 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              className="w-8 h-8 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               defaultChecked={task?.isCompleted || false}
-              
             />
           </div>
           <div className="flex flex-col gap-y-2">
@@ -116,7 +117,11 @@ console.log(task,'ye h bhai')
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button asChild variant="destructive" className="bg-primary-100 dark:text-black">
+          <Button
+            asChild
+            variant="destructive"
+            className="bg-primary-100 dark:text-black"
+          >
             <Link href="/dashboard">Cancel</Link>
           </Button>
           <Button className="bg-primary-500">Submit</Button>
