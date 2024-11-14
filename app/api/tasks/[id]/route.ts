@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest,{ params }: { params: { id: string } }) {
   const { id } = params;
     try {
-     
+     console.log('im in taak db',id)
     if (!id) {
         return NextResponse.json({ error: "User ID is required" }, { status: 400 });
       }
@@ -15,6 +15,7 @@ export async function GET(request: NextRequest,{ params }: { params: { id: strin
   
       // Find all tasks associated with the given userId
       const tasks = await Task.find({ user: id });
+      console.log('imtasb',tasks)
   
       return NextResponse.json(tasks);
     } catch (err) {
