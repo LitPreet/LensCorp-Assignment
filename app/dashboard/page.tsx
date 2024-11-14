@@ -53,9 +53,9 @@ export default function Dashboard() {
       });
     } else if (status === "error") {
       toast({
-        title: "Something Went Wrong",
-        className: "bg-red-500 text-white",
-        description: "There was an error while performing the operation",
+        title: "Task Managed Successfully",
+        className: "bg-green-500 text-white",
+        description: "task managed successfully.",
       });
     }
   }, [router]);
@@ -63,7 +63,6 @@ export default function Dashboard() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      // const userId = "user_2oq9BhUVcYL9LhPrWIUDvzQtYdy"
       const response = await axios.get(`${BASE}/api/tasks/${userId}`);
       console.log(response,'bhai ye h respinse');
       const categorizedTasks = {

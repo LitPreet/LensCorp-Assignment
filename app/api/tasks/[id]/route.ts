@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest,{ params }: { params: { id: string } }) {
   const { id } = params;
     try {
-     console.log('im in taak db',id)
     if (!id) {
         return NextResponse.json({ error: "User ID is required" }, { status: 400 });
       }

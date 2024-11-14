@@ -13,10 +13,11 @@ import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createTask } from "@/lib/actions/task.actions";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function NewTaskRoute() {
-  // const { getToken, userId, sessionId } = await auth();
-  const userId = 'user_29w83sxmDNGwOuEthce5gg56FcC'
+  const { getToken, userId, sessionId } = await auth();
+
 
   async function postData(formData: FormData) {
     "use server";
