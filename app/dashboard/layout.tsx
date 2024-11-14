@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import LeftSidebar from "@/components/shared/LeftSidebar";
 import Navbar from "@/components/shared/navbar/Navbar";
+import { TaskFilterProvider } from "../context/TaskFilterContext";
 
 export default function RootLayout({
   children,
@@ -8,6 +9,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <TaskFilterProvider>
     <main className="background-light850_dark100 relative">
       <Navbar />
       <div className="flex">
@@ -18,5 +20,6 @@ export default function RootLayout({
       </div>
       <Toaster />
     </main>
+    </TaskFilterProvider>
   );
 }

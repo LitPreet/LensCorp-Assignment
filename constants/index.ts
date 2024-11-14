@@ -12,14 +12,9 @@ export const sidebarLinks: SidebarLink[] = [
         label: "Home",
     },
     {
-        imgURL: "/assets/icons/users.svg",
-        route: "/community",
-        label: "Pending Tasks",
-    },
-    {
         imgURL: "/assets/icons/star.svg",
-        route: "/collection",
-        label: "Completed Tasks",
+        route: "/dashboard/task-summary",
+        label: "Task Summary",
     },
 ];
 

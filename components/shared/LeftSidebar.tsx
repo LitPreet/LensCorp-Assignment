@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { sidebarLinks } from "@/constants";
 import { usePathname } from "next/navigation";
@@ -17,15 +16,7 @@ const LeftSidebar = () => {
       <div className="flex flex-1 flex-col gap-6 ">
         {sidebarLinks.map((item) => {
           const isActive =
-            (pathname.includes(item.route) && item.route.length > 1) ||
-            pathname === item.route;
-          if (item.route === "/profile") {
-            if (userId) {
-              item.route = `${item.route}/${userId}`;
-            } else {
-              return null;
-            }
-          }
+            pathname === item.route 
 
           return (
             <Link
@@ -72,7 +63,6 @@ const LeftSidebar = () => {
               </span>
             </Button>
           </Link>
-
           <Link href="/sign-up">
             <Button className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none">
               <Image

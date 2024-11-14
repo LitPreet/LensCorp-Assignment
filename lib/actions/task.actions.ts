@@ -8,7 +8,7 @@ interface CreateTaskInput {
   description?: string;
   dueDate: Date;
   priority?: 'Low' | 'Medium' | 'High';
-  userId: IUser['_id']; 
+  user: string; 
 }
 
 export async function createTask(input: CreateTaskInput) {
@@ -20,7 +20,7 @@ export async function createTask(input: CreateTaskInput) {
       dueDate: input.dueDate,
       priority: input.priority || 'Medium',
       isCompleted: false,
-      user: input.userId, 
+      user: input.user, 
     });
 
     await newTask.save();
@@ -38,7 +38,7 @@ interface UpdateTaskInput {
   dueDate?: Date;
   priority?: 'Low' | 'Medium' | 'High';
   isCompleted?: boolean;
-  userId: string; 
+  user: string; 
 }
 
 export const fetchTasksForUser = async (userId: string) => {
@@ -53,40 +53,58 @@ export const fetchTasksForUser = async (userId: string) => {
     }
   };
 
+  export const fetchSpecificTaskForUser = async (userId: string, taskId: string) => {
+    try {
+      // Find the specific task associated with the given userId and taskId
+      const task = await Task.findOne({ user: userId, _id: taskId });
+      
+      if (!task) {
+        throw new Error("Task not found.");
+      }
+  
+      return task;
+    } catch (err) {
+      console.error("Error fetching task for user:", err);
+      throw new Error("Failed to fetch the task for the user.");
+    }
+  };
+  
+
 // Edit task details
 export async function editTask(input: UpdateTaskInput) {
-  try {
-    await connectToDatabase();
-
-    // Check if the task exists and if the current user is the owner
-    const task = await Task.findById(input.taskId);
-
-    if (!task) {
-      return { success: false, error: 'Task not found' };
+    try {
+        console.log(input,'main andar hu')
+      await connectToDatabase();
+  
+      // Find the task by ID and check if it exists
+      const task = await Task.findById(input.taskId);
+  
+      if (!task) {
+        return { success: false, error: "Task not found" };
+      }
+  
+      // Verify if the user is authorized to edit the task
+      if (task.user.toString() !== input.user.toString()) {
+        return { success: false, error: "You are not authorized to edit this task" };
+      }
+  
+      // Update the task fields
+      task.title = input.title;
+      task.description = input.description;
+      task.dueDate = input.dueDate;
+      task.priority = input.priority;
+      task.isCompleted = input.isCompleted;
+  
+      // Save and return the updated task
+      const updatedTask = await task.save();
+      return { success: true, task: updatedTask };
+  
+    } catch (error) {
+      console.error("Error updating task:", error);
+      return { success: false, error: "Failed to update task" };
     }
-
-    if (task.user.toString() !== input.userId.toString()) {
-      return { success: false, error: 'You are not authorized to edit this task' };
-    }
-
-    const updatedTask = await Task.findByIdAndUpdate(
-      input.taskId,
-      {
-        title: input.title,
-        description: input.description,
-        dueDate: input.dueDate,
-        priority: input.priority,
-        isCompleted: input.isCompleted,
-      },
-      { new: true } // Return the updated document
-    );
-
-    return { success: true, task: updatedTask };
-  } catch (error) {
-    console.error('Error updating task:', error);
-    return { success: false, error: 'Failed to update task' };
   }
-}
+  
 
 // Delete a task
 export async function deleteTask(taskId: string, userId: string) {
@@ -117,8 +135,6 @@ export async function deleteTask(taskId: string, userId: string) {
 export async function updateTaskStatus(taskId: string, isCompleted: boolean, userId: string) {
   try {
     await connectToDatabase();
-
-    // Check if the task exists and if the current user is the owner
     const task = await Task.findById(taskId);
 
     if (!task) {
@@ -132,7 +148,7 @@ export async function updateTaskStatus(taskId: string, isCompleted: boolean, use
     const updatedTask = await Task.findByIdAndUpdate(
       taskId,
       { isCompleted },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     return { success: true, task: updatedTask };

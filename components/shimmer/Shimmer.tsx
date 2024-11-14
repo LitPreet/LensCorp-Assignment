@@ -2,18 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 
-const Loading = () => {
+const Shimmer = () => {
   return (
     <section>
-      <div className="flex w-full flex-col justify-between gap-4 sm:flex-row sm:items-center ">
-        <h1 className="h1-bold text-dark100_light900">All Questions</h1>
-        <Link href="/ask-question" className="flex justify-start max-sm:w-full">
-          <Button className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900 ">
-            Ask a Question
-          </Button>
+      <div className="flex items-center justify-between px-2">
+        <div className="grid gap-1">
+          <h1 className="text-3xl md:text-4xl">Your Tasks</h1>
+          <p className="text-lg text-muted-foreground">
+            Here you can see and create new Tasks
+          </p>
+        </div>
+        <Link href="/dashboard/new">
+          <Button className="bg-primary-500">Create a new task</Button>
         </Link>
       </div>
-
       <div className="mb-12 mt-11 flex flex-wrap items-center justify-between gap-5 ">
         <Skeleton className="h-14 flex-1" />
         <div className="hidden max-md:block">
@@ -37,4 +39,4 @@ const Loading = () => {
   );
 };
 
-export default Loading;
+export default Shimmer;
