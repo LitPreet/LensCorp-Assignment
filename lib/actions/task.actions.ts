@@ -55,25 +55,27 @@ export const fetchTasksForUser = async (userId: string) => {
 
   export const fetchSpecificTaskForUser = async (userId: string, taskId: string) => {
     try {
+      await connectToDatabase();
       // Find the specific task associated with the given userId and taskId
       const task = await Task.findOne({ user: userId, _id: taskId });
-      
+  
       if (!task) {
-        throw new Error("Task not found.");
+        console.warn(`Task with ID ${taskId} for user ${userId} not found.`);
+        return null; // Return null instead of throwing an error
       }
   
       return task;
     } catch (err) {
       console.error("Error fetching task for user:", err);
-      throw new Error("Failed to fetch the task for the user.");
+      return null; // Return null on error as well to avoid throwing an error
     }
   };
+  
   
 
 // Edit task details
 export async function editTask(input: UpdateTaskInput) {
     try {
-        console.log(input,'main andar hu')
       await connectToDatabase();
   
       // Find the task by ID and check if it exists
