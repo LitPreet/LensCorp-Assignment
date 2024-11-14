@@ -23,6 +23,7 @@ interface EditTaskRouteProps {
 export default async function EditTaskRoute({ params }: EditTaskRouteProps) {
   const { id  } = params;
   const {userId} = await auth();
+  console.log(id,userId,'or bhai')
 
   const task = await fetchSpecificTaskForUser(userId!,id);
 
