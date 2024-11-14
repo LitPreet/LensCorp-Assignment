@@ -65,7 +65,7 @@ export default function Dashboard() {
     try {
       // const userId = "user_2oq9BhUVcYL9LhPrWIUDvzQtYdy"
       const response = await axios.get(`${BASE}/api/tasks/${userId}`);
-      console.log(response);
+      console.log(response,'bhai ye h respinse');
       const categorizedTasks = {
         completed: response.data.filter(
           (task: any) => task.isCompleted === true
