@@ -42,7 +42,6 @@ export default function Dashboard() {
   const { toast } = useToast();
   const router = useRouter();
   const { filter, setFilter } = useTaskFilter();
-  console.log(userId, "kjhgfghjkjhghjkjhgfghjhgfghjhgf");
   useEffect(() => {
     const status = new URLSearchParams(window.location.search).get("status");
     if (status === "success") {
@@ -64,7 +63,6 @@ export default function Dashboard() {
     setLoading(true);
     try {
       const response = await axios.get(`${BASE}/api/tasks/${userId}`);
-      console.log(response,'bhai ye h respinse');
       const categorizedTasks = {
         completed: response.data.filter(
           (task: any) => task.isCompleted === true
@@ -77,17 +75,15 @@ export default function Dashboard() {
       setTasks(response.data);
     } catch (err: any) {
       setError(err.message);
-      console.log(err, "error jao");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log("inside fetcjh");
     fetchTasks();
   }, []);
-  console.log(tasks, "ye h tasks");
+ 
   const handleDelete = async (taskId: string) => {
     setDeletingTaskId(taskId);
 
@@ -112,7 +108,7 @@ export default function Dashboard() {
       if (filter === "Completed") return task.isCompleted;
       return true;
     });
-  console.log(filteredTasks, "ye h filter");
+
   return loading ? (
     <Shimmer />
   ) : (
