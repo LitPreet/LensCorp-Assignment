@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
+import { createTask } from "@/lib/actions/task.actions";
 
 export default async function NewTaskRoute() {
   const { getToken, userId, sessionId } = await auth();
@@ -26,20 +27,19 @@ export default async function NewTaskRoute() {
     const description = formData.get("description") as string;
     const dueDate = formData.get("dueDate") as string;
     const priority = formData.get("priority") as "Low" | "Medium" | "High";
-    const isCompleted = formData.get("isCompleted") === "true";
-
-    // Placeholder for actual database logic
-    // await prisma.task.create({
-    //   data: {
-    //     userId,
-    //     title,
-    //     description,
-    //     dueDate: new Date(dueDate),
-    //     priority,
-    //     isCompleted,
-    //   },
-    // });
-    return redirect("/dashboard");
+    try {
+      await createTask({
+        dueDate: new Date(dueDate),
+        priority: priority,
+        title: title,
+        userId: userId,
+        description: description,
+      });
+    
+      return redirect("/dashboard");
+    } catch (err) {
+      return redirect("/dashboard");
+    }
   }
 
   return (
@@ -75,19 +75,23 @@ export default async function NewTaskRoute() {
           </div>
           <div className="flex flex-col gap-y-2">
             <Label>Priority</Label>
-            <select name="priority" required className="border rounded px-2 py-1">
+            <select
+              name="priority"
+              required
+              className="border rounded px-2 py-1"
+            >
               <option value="Medium">Medium</option>
               <option value="Low">Low</option>
               <option value="High">High</option>
             </select>
           </div>
-          <div className="flex flex-col gap-y-2">
+          {/* <div className="flex flex-col gap-y-2">
             <Label>Mark as Completed</Label>
             <select name="isCompleted" required className="border rounded px-2 py-1">
               <option value="false">No</option>
               <option value="true">Yes</option>
             </select>
-          </div>
+          </div> */}
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button asChild variant="destructive" className="bg-primary-100">

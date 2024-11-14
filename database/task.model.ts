@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { IUser } from './user.model';
 
-interface ITask extends Document {
+export interface ITask extends Document {
   title: string;
   description: string;
   dueDate: Date;
@@ -9,7 +9,7 @@ interface ITask extends Document {
   isCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
-  user: IUser['_id']; // Reference to the User who created the task
+  user: Schema.Types.ObjectId | IUser; // Reference to the User who created the task
 }
 
 const TaskSchema: Schema = new Schema(
@@ -38,7 +38,7 @@ const TaskSchema: Schema = new Schema(
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User', // Reference to the User model
+      ref: 'User',
       required: true,
     },
   },
@@ -60,6 +60,6 @@ TaskSchema.statics.getTaskStatistics = async function () {
   };
 };
 
-const Task = mongoose.model<ITask>('Task', TaskSchema);
+const Task = mongoose.models.Task || mongoose.model<ITask>('Task', TaskSchema);
 
 export default Task;

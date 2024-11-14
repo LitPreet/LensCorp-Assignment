@@ -1,8 +1,22 @@
 import { Button } from "@/components/ui/button";
-import {  File, Edit } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import Task from "@/database/task.model";
+import { connectToDatabase } from "@/lib/mongoose";
+import { File, Edit } from "lucide-react";
 import Link from "next/link";
+import { ITask } from "@/database/task.model";
+import { Card } from "@/components/ui/card";
+import { auth } from "@clerk/nextjs/server";
 
-export default function Dashboard() {
+async function getData(userId: string) {
+const data = await Task.find({user:userId});
+return data
+}
+
+export default async function Dashboard() {
+  const { userId } = await auth();
+  const tasks = await getData(userId!)
+  
   return (
     <div className="grid items-start gap-y-8">
       <div className="flex items-center justify-between px-2">
@@ -12,7 +26,9 @@ export default function Dashboard() {
             Here you can see and create new Tasks
           </p>
         </div>
-        <Link href="/dashboard/new"><Button className="bg-primary-500">Create a new task</Button></Link>
+        <Link href="/dashboard/new">
+          <Button className="bg-primary-500">Create a new task</Button>
+        </Link>
       </div>
       {true ? (
         <div className="flex min-h-[400px] flex-col items-center justify-center rounded-md border border-dashed p-8 text-center animate-in fade-in-50">
@@ -29,36 +45,59 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="flex flex-col gap-y-4">
-          {/* {data?.Note.map((item) => (
-            <Card
-              key={item.id}
-              className="flex items-center justify-between p-4"
-            >
-              <div>
-                <h2 className="font-semibold text-xl text-primary">
-                  {item.title}
-                </h2>
-                <p>
-                  {new Intl.DateTimeFormat("en-US", {
-                    dateStyle: "full",
-                  }).format(new Date(item.createdAt))}
-                </p>
-              </div>
-  
-              <div className="flex gap-x-4">
-                <Link href={`/dashboard/new/${item.id}`}>
-                  <Button variant="outline" size="icon">
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                </Link>
-                <form action={deleteNote}>
+          {tasks &&
+            tasks.length > 0 &&
+            tasks.map((item:ITask) => (
+              <Card
+                key={item.id}
+                className="flex items-center justify-between p-4"
+              >
+                <div>
+                  <h2 className="font-semibold text-xl text-primary">
+                    {item.title}
+                  </h2>
+                  <p>
+                    {new Intl.DateTimeFormat("en-US", {
+                      dateStyle: "full",
+                    }).format(new Date(item.createdAt))}
+                  </p>
+                </div>
+
+                <div className="flex gap-x-4">
+                  <Link href={`/dashboard/new/${item.id}`}>
+                    <Button variant="outline" size="icon">
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                  {/* <form action={deleteNote}>
                   <input type="hidden" name="noteId" value={item.id} />
                   <TrashDelete />
-                </form>
-              </div>
-            </Card> */}
+                </form> */}
+                </div>
+              </Card>
+            ))}
         </div>
       )}
     </div>
   );
 }
+
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   const {userId} = useAuth();
+//   try {
+//     await connectToDatabase(); // Ensure DB connection
+
+//     // Fetch tasks for the user
+//     const tasks = await Task.find({ userId }).sort({ createdAt: -1 }).lean(); // .lean() for plain JavaScript objects
+
+//     // Pass the tasks to the page component
+//     return {
+//       props: { tasks }
+//     };
+//   } catch (error) {
+//     console.error("Error fetching tasks:", error);
+//     return {
+//       props: { tasks: [] }
+//     };
+//   }
+// };
