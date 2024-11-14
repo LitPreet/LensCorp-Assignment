@@ -1,26 +1,22 @@
 
-# Dev Vault
+# Task App
 <img src="https://github.com/LitPreet/Dev-Vault/blob/master/public/assets/images/pic2.png" />
-Dev Vault is an advanced Q&A platform built with Next.js 14, tailored to meet the needs of developers. This application serves as a vibrant community where developers of all experience levels can ask questions, share knowledge, and collaborate effectively. Designed to facilitate seamless interaction, Dev Vault aims to enhance learning and problem-solving among developers.
+A task management application built with Next.js, designed to help users efficiently create, track, and manage their tasks. This app offers features such as task creation, categorization by status (e.g., pending, in-progress, completed), and task progress visualization using charts. With a user-friendly interface, real-time updates, filtering options.
 
 ## 🌐Demo
 
-Explore the live project - https://dev-vault-preet006s-projects.vercel.app/
+Explore the live project - https://lens-corp-assignment.vercel.app/
 
 
 ## 🚀Key Features
-- Ask questions and answer questions.
-- Upvote, Downvote, and save questions.
-- Include code snippets in your answers.
-- Searching and filtering.
-- View Top Questions and Popular Tags.
-- Built-in recommendation algorithm.
-- Global Search across the database.
-- View all tags and tag-related questions.
-- View and Edit your profile.
-- Built-in badge system for earning badges.
-- View, search jobs or filter by location.
-- Light and Dark Mode.
+- Task Management: Create, update, and track tasks.
+- Task Filtering: Filter tasks by status and set priorities.
+- Real-time Updates: View live task status and summaries.
+- Toast Notifications: Get success/error alerts for task actions.
+- Responsive Dashboard: Optimized for all screen sizes.
+- User Profile & Settings: Manage your profile and dashboard preferences.
+- Light/Dark Mode: Toggle between light and dark modes.
+
 
 ## 🛠️Tech Stack
 - Next.js 14
@@ -29,14 +25,10 @@ Explore the live project - https://dev-vault-preet006s-projects.vercel.app/
 - MongoDB
 - Mongoose
 - Clerk for Authentication
-- Query String
 - Shadcn UI for reusable components
-- PrismJS for syntax highlighting
-- React Icons
+- LUCIDE Icons
 - Zod for Form validation
-- TinyMCE for the editor
 - Next themes for theme management
-- JSearch API for job searching
 - Vercel for deployment
 ## 🏁 Get Started
 To get this project up and running in your development environment, follow these step-by-step instructions.
@@ -50,7 +42,7 @@ In order to install and run this project locally, you would need to have the fol
 #### step 1
 Download or clone this repo by using the link below:
 ```
-https://github.com/LitPreet/Dev-Vault.git
+https://github.com/LitPreet/LensCorp-Assignment
 ```
 #### step 2
 Execute the following command in the root directory of the downloaded repo in order to install dependencies:
@@ -75,17 +67,15 @@ Open http://localhost:3000 with your browser to see the result.
 
 ## 🔒 Environment Variables
 ```
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<CLERK_PUBLISHABLE_KEY>
-CLERK_SECRET_KEY=<CLERK_SECRET_KEY>
-NEXT_CLERK_WEBHOOK_SECRET=<CLERK_WEBHOOK_SECRET>
+WEBHOOK_SECRET
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
-NEXT_PUBLIC_TINY_EDITOR_API_KEY=<YOUR_TINY_EDITOR_API_KEY>
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/dashboard
+NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=/dashboard
 MONGODB_URL=<YOUR_MONGODB_URL>
-RapidAPI_Key=<YOUR_RAPID_API_KEY>
-RapidAPI_Host=<YOUR_RAPIDAPI_HOST>
 ```
 ## 🚀 Deployment
 You can create an optimized production build with the following command:
