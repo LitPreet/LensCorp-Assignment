@@ -1,6 +1,5 @@
 
 # Task App
-<img src="https://github.com/LitPreet/Dev-Vault/blob/master/public/assets/images/pic2.png" />
 A task management application built with Next.js, designed to help users efficiently create, track, and manage their tasks. This app offers features such as task creation, categorization by status (e.g., pending, in-progress, completed), and task progress visualization using charts. With a user-friendly interface, real-time updates, filtering options.
 
 ## 🌐Demo

@@ -37,7 +37,7 @@ export default function Dashboard() {
   const { toast } = useToast();
   const router = useRouter();
   const { filter, setFilter } = useTaskFilter();
-  
+  console.log(userId, 'kjhgfghjkjhghjkjhgfghjhgfghjhgf')
   useEffect(() => {
     const status = new URLSearchParams(window.location.search).get("status");
     if (status === "success") {
@@ -58,6 +58,7 @@ export default function Dashboard() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
+      // const userId = "user_2oq9BhUVcYL9LhPrWIUDvzQtYdy"
       const response = await axios.get(`${BASE}/api/tasks/${userId}`);
       const categorizedTasks = {
         completed: response.data.filter((task: any) => task.isCompleted === true).length,
@@ -81,6 +82,7 @@ export default function Dashboard() {
     setDeletingTaskId(taskId);
 
     try {
+      // const userId = "user_2oq9BhUVcYL9LhPrWIUDvzQtYdy"
       await axios.delete(`${BASE}/api/tasks/${taskId}`, {
         data: { userId },
       });
