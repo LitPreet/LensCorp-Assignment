@@ -52,10 +52,9 @@ console.log("im callig")
     // Do something with the payload
     // For this guide, you simply log the payload to the console
     const { id } = evt.data;
-    console.log(evt.data,'ye h console')
-    console.log(id,'haah bhai')
+  
     const eventType = evt.type;
-    console.log(eventType,'heyyy im here')
+  
     if (eventType === "user.created") {
         const { id, email_addresses, image_url, username, first_name, last_name } = evt.data
         console.log(id, email_addresses, image_url, username, first_name, last_name)

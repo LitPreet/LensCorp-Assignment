@@ -1,5 +1,5 @@
-
 import mongoose, { Schema, Document } from 'mongoose';
+import { IUser } from './user.model';
 
 interface ITask extends Document {
   title: string;
@@ -9,6 +9,7 @@ interface ITask extends Document {
   isCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
+  user: IUser['_id']; // Reference to the User who created the task
 }
 
 const TaskSchema: Schema = new Schema(
@@ -34,6 +35,11 @@ const TaskSchema: Schema = new Schema(
     isCompleted: {
       type: Boolean,
       default: false,
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User', // Reference to the User model
+      required: true,
     },
   },
   {
