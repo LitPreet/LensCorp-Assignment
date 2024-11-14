@@ -9,7 +9,7 @@ export interface ITask extends Document {
   isCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
-  user: Schema.Types.ObjectId | IUser; // Reference to the User who created the task
+  user: string 
 }
 
 const TaskSchema: Schema = new Schema(
@@ -37,8 +37,7 @@ const TaskSchema: Schema = new Schema(
       default: false,
     },
     user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+      type: String,
       required: true,
     },
   },
