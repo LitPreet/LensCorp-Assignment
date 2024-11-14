@@ -6,13 +6,18 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@clerk/nextjs";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Shimmer from "@/components/shimmer/Shimmer";
 import { useRouter } from "next/navigation";
 import PriorityCard from "@/components/cards/PriorityCard";
 import { useTaskFilter } from "../context/TaskFilterContext";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ITask {
   _id: string;
@@ -28,7 +33,7 @@ interface ITask {
 
 export default function Dashboard() {
   const { userId } = useAuth();
-  const {setTaskData} = useTaskFilter()
+  const { setTaskData } = useTaskFilter();
   const [tasks, setTasks] = useState<ITask[]>([]);
   const [loading, setLoading] = useState(true); // Loader for fetching tasks
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null); // Loader for specific delete
@@ -37,7 +42,7 @@ export default function Dashboard() {
   const { toast } = useToast();
   const router = useRouter();
   const { filter, setFilter } = useTaskFilter();
-  console.log(userId, 'kjhgfghjkjhghjkjhgfghjhgfghjhgf')
+  console.log(userId, "kjhgfghjkjhghjkjhgfghjhgfghjhgf");
   useEffect(() => {
     const status = new URLSearchParams(window.location.search).get("status");
     if (status === "success") {
@@ -60,24 +65,30 @@ export default function Dashboard() {
     try {
       // const userId = "user_2oq9BhUVcYL9LhPrWIUDvzQtYdy"
       const response = await axios.get(`${BASE}/api/tasks/${userId}`);
+      console.log(response);
       const categorizedTasks = {
-        completed: response.data.filter((task: any) => task.isCompleted === true).length,
-        pending: response.data.filter((task: any) => task.isCompleted === false).length,
+        completed: response.data.filter(
+          (task: any) => task.isCompleted === true
+        ).length,
+        pending: response.data.filter((task: any) => task.isCompleted === false)
+          .length,
         all: response.data.length,
       };
-      setTaskData(categorizedTasks)
+      setTaskData(categorizedTasks);
       setTasks(response.data);
     } catch (err: any) {
       setError(err.message);
+      console.log(err, "error jao");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    console.log("inside fetcjh");
     fetchTasks();
   }, []);
-
+  console.log(tasks, "ye h tasks");
   const handleDelete = async (taskId: string) => {
     setDeletingTaskId(taskId);
 
@@ -94,12 +105,15 @@ export default function Dashboard() {
     }
   };
 
-  const filteredTasks = tasks && tasks.length > 0 && tasks.filter((task) => {
-    if (filter === 'Pending') return !task.isCompleted;
-    if (filter === 'Completed') return task.isCompleted;
-    return true; 
-  });
-
+  const filteredTasks =
+    tasks &&
+    tasks.length > 0 &&
+    tasks.filter((task) => {
+      if (filter === "Pending") return !task.isCompleted;
+      if (filter === "Completed") return task.isCompleted;
+      return true;
+    });
+  console.log(filteredTasks, "ye h filter");
   return loading ? (
     <Shimmer />
   ) : (
@@ -116,18 +130,23 @@ export default function Dashboard() {
         </Link>
       </div>
       <div className="flex w-full justify-between items-center">
-      <PriorityCard />
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button variant="outline">Filter Tasks</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="z-10 dark:bg-black bg-white">
-          <DropdownMenuItem onClick={() => setFilter('All')}>All</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setFilter('Pending')}>Pending</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setFilter('Completed')}>Completed</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
+        <PriorityCard />
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button variant="outline">Filter Tasks</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="z-10 dark:bg-black bg-white">
+            <DropdownMenuItem onClick={() => setFilter("All")}>
+              All
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setFilter("Pending")}>
+              Pending
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setFilter("Completed")}>
+              Completed
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {!filteredTasks || filteredTasks.length === 0 ? (
@@ -145,65 +164,67 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-4">
-          {filteredTasks && filteredTasks.length > 0 && filteredTasks.map((item: ITask) => (
-            <Card
-              key={item._id}
-              className={`flex flex-col p-4 border-l-8 ${
-                item.priority === "Low"
-                  ? "border-yellow-300"
-                  : item.priority === "Medium"
-                  ? "border-primary-500"
-                  : "border-red-500"
-              }`}
-            >
-              <div className="">
-                <div className="flex justify-between w-full">
-                  <h2 className="font-semibold text-xl text-primary">
-                    {item.title}
-                  </h2>
-                  <Badge
-                    variant={item.isCompleted ? "default" : "secondary"}
-                    className={`bg-blue-600 text-white`}
-                  >
-                    {item.isCompleted ? "Completed" : "Pending"}
-                  </Badge>
+          {filteredTasks &&
+            filteredTasks.length > 0 &&
+            filteredTasks.map((item: ITask) => (
+              <Card
+                key={item._id}
+                className={`flex flex-col p-4 border-l-8 ${
+                  item.priority === "Low"
+                    ? "border-yellow-300"
+                    : item.priority === "Medium"
+                    ? "border-primary-500"
+                    : "border-red-500"
+                }`}
+              >
+                <div className="">
+                  <div className="flex justify-between w-full">
+                    <h2 className="font-semibold text-xl text-primary">
+                      {item.title}
+                    </h2>
+                    <Badge
+                      variant={item.isCompleted ? "default" : "secondary"}
+                      className={`bg-blue-600 text-white`}
+                    >
+                      {item.isCompleted ? "Completed" : "Pending"}
+                    </Badge>
+                  </div>
+                  <p className="my-2 text-sm text-muted-foreground">
+                    Due Date:{" "}
+                    {new Intl.DateTimeFormat("en-US", {
+                      dateStyle: "medium",
+                    }).format(new Date(item.dueDate))}
+                  </p>
+                  <p className="text-sm">
+                    Created At:{" "}
+                    {new Intl.DateTimeFormat("en-US", {
+                      month: "2-digit",
+                      day: "2-digit",
+                      year: "numeric",
+                    }).format(new Date(item.createdAt))}
+                  </p>
                 </div>
-                <p className="my-2 text-sm text-muted-foreground">
-                  Due Date:{" "}
-                  {new Intl.DateTimeFormat("en-US", {
-                    dateStyle: "medium",
-                  }).format(new Date(item.dueDate))}
-                </p>
-                <p className="text-sm">
-                  Created At:{" "}
-                  {new Intl.DateTimeFormat("en-US", {
-                    month: "2-digit",
-                    day: "2-digit",
-                    year: "numeric",
-                  }).format(new Date(item.createdAt))}
-                </p>
-              </div>
-              <div className="flex gap-x-4 justify-center my-2 items-center">
-                <Link href={`/dashboard/new/${item._id}`}>
-                  <Button variant="outline" size="icon">
-                    <Edit className="w-4 h-4" />
+                <div className="flex gap-x-4 justify-center my-2 items-center">
+                  <Link href={`/dashboard/new/${item._id}`}>
+                    <Button variant="outline" size="icon">
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleDelete(item._id)}
+                    disabled={deletingTaskId === item._id}
+                  >
+                    {deletingTaskId === item._id ? (
+                      <Loader className="animate-spin" />
+                    ) : (
+                      <Trash className="w-4 h-4 text-red-500" />
+                    )}
                   </Button>
-                </Link>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleDelete(item._id)}
-                  disabled={deletingTaskId === item._id}
-                >
-                  {deletingTaskId === item._id ? (
-                    <Loader className="animate-spin" />
-                  ) : (
-                    <Trash className="w-4 h-4 text-red-500" />
-                  )}
-                </Button>
-              </div>
-            </Card>
-          ))}
+                </div>
+              </Card>
+            ))}
         </div>
       )}
     </div>
