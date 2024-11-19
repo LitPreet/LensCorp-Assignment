@@ -1,7 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import qs from "query-string"
-import { BadgeCounts } from "@/types";
  
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -102,3 +101,37 @@ export const removeKeysFromQuery = ({ params, keysToRemove}: RemoveUrlQueryParam
   { skipNull: true})
 }
 
+
+export const getLocation = async (latitude:string, longitude:string) => {
+  const apiSecret = process.env.NEXT_PUBLIC_LOCATION_API_SECRET;
+  console.log(apiSecret,'j')
+  const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${longitude}&lon=${latitude}&apiKey=${apiSecret}`;
+
+  try {
+    const response = await fetch(url);
+  
+    if (!response.ok) {
+      throw new Error('Failed to fetch location');
+    }
+    const result = await response.json();
+    
+    const location = result.features[0].properties;
+    
+
+    const locationDetails = {
+      city: location.city,
+      country: location.country,
+      state: location.state,
+      address: location.address_line2, // Full address from address_line2
+      street: location.street, // Street name
+    };
+
+    // Log the extracted location details
+    console.log(locationDetails);
+
+    // Optionally, you can return the result if you want to use it elsewhere
+    return locationDetails;
+  } catch (error) {
+    console.error('Error fetching location:', error);
+  }
+};

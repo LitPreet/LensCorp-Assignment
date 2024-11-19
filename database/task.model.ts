@@ -9,7 +9,11 @@ export interface ITask extends Document {
   isCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
-  user: string 
+  user: string;
+  location?: {
+    latitude: string;
+    longitude: string;
+  };
 }
 
 const TaskSchema: Schema = new Schema(
@@ -35,6 +39,10 @@ const TaskSchema: Schema = new Schema(
     isCompleted: {
       type: Boolean,
       default: false,
+    },
+    location: {
+      latitude: { type: String},
+      longitude: { type: String },
     },
     user: {
       type: String,

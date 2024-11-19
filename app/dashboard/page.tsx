@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { File, Edit, Trash, Loader } from "lucide-react";
+import { File, Edit, Trash, Loader, MapPin } from "lucide-react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getLocation } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+interface Location {
+  address: string;
+  city: string;
+  country: string;
+  state: string;
+  street: string;
+}
 
 interface ITask {
   _id: string;
@@ -29,6 +44,7 @@ interface ITask {
   createdAt: Date;
   updatedAt: Date;
   user: string;
+  location: Location;
 }
 
 export default function Dashboard() {
@@ -42,6 +58,7 @@ export default function Dashboard() {
   const { toast } = useToast();
   const router = useRouter();
   const { filter, setFilter } = useTaskFilter();
+
   useEffect(() => {
     const status = new URLSearchParams(window.location.search).get("status");
     if (status === "success") {
@@ -63,17 +80,42 @@ export default function Dashboard() {
     setLoading(true);
     try {
       const response = await axios.get(`${BASE}/api/tasks/${userId}`);
+
+      setTasks(response.data);
+
+      // Fetch locations for tasks in parallel
+      const enrichedTasks = await Promise.all(
+        response.data.map(async (task: any) => {
+          try {
+            const location = await getLocation(
+              task.location.longitude,
+              task.location.latitude
+            );
+            return {
+              ...task,
+              location: location,
+            };
+          } catch (error) {
+            console.error("Error fetching location for task:", task.id, error);
+            return { ...task, location: "Unknown Location" }; // Default fallback
+          }
+        })
+      );
+
+      // Categorize tasks after enrichment
       const categorizedTasks = {
-        completed: response.data.filter(
+        completed: enrichedTasks.filter(
           (task: any) => task.isCompleted === true
         ).length,
-        pending: response.data.filter((task: any) => task.isCompleted === false)
+        pending: enrichedTasks.filter((task: any) => task.isCompleted === false)
           .length,
-        all: response.data.length,
+        all: enrichedTasks.length,
       };
+
+      setTasks(enrichedTasks);
       setTaskData(categorizedTasks);
-      setTasks(response.data);
     } catch (err: any) {
+      console.error("Error fetching tasks:", err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -83,12 +125,10 @@ export default function Dashboard() {
   useEffect(() => {
     fetchTasks();
   }, []);
- 
+  console.log(tasks, "jhgx");
   const handleDelete = async (taskId: string) => {
     setDeletingTaskId(taskId);
-
     try {
-      // const userId = "user_2oq9BhUVcYL9LhPrWIUDvzQtYdy"
       await axios.delete(`${BASE}/api/tasks/${taskId}`, {
         data: { userId },
       });
@@ -108,7 +148,6 @@ export default function Dashboard() {
       if (filter === "Completed") return task.isCompleted;
       return true;
     });
-
   return loading ? (
     <Shimmer />
   ) : (
@@ -175,7 +214,9 @@ export default function Dashboard() {
                 <div className="">
                   <div className="flex justify-between w-full">
                     <h2 className="font-semibold text-xl text-primary">
-                      {item.title}
+                      {item.title.length > 10
+                        ? `${item.title.slice(0, 10)}...`
+                        : item.title}
                     </h2>
                     <Badge
                       variant={item.isCompleted ? "default" : "secondary"}
@@ -205,6 +246,19 @@ export default function Dashboard() {
                       <Edit className="w-4 h-4" />
                     </Button>
                   </Link>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="outline">
+                          <MapPin />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className="z-10 bg-white text-black dark:bg-black dark:text-white">
+                        <p>{item.location.address || item.location.city}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
                   <Button
                     variant="outline"
                     size="icon"

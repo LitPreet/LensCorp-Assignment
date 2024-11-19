@@ -11,11 +11,10 @@ export async function GET(request: NextRequest,{ params }: { params: { id: strin
   
       // Connect to the database
       await connectToDatabase();
-  
+
       // Find all tasks associated with the given userId
       const tasks = await Task.find({ user: id });
-      console.log('imtasb',tasks)
-  
+    
       return NextResponse.json(tasks);
     } catch (err) {
       return NextResponse.json({ error: "Failed to fetch tasks for the user." }, { status: 500 });

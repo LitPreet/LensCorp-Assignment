@@ -9,6 +9,8 @@ interface CreateTaskInput {
   dueDate: Date;
   priority?: 'Low' | 'Medium' | 'High';
   user: string; 
+  latitude: string;
+  longitude: string;
 }
 
 export async function createTask(input: CreateTaskInput) {
@@ -21,6 +23,10 @@ export async function createTask(input: CreateTaskInput) {
       priority: input.priority || 'Medium',
       isCompleted: false,
       user: input.user, 
+      location: {                
+        latitude: input.latitude,
+        longitude: input.longitude,
+      },
     });
 
     await newTask.save();
@@ -39,6 +45,8 @@ interface UpdateTaskInput {
   priority?: 'Low' | 'Medium' | 'High';
   isCompleted?: boolean;
   user: string; 
+  latitude: string;
+  longitude: string;
 }
 
 export const fetchTasksForUser = async (userId: string) => {
@@ -77,25 +85,26 @@ export const fetchTasksForUser = async (userId: string) => {
 export async function editTask(input: UpdateTaskInput) {
     try {
       await connectToDatabase();
-  
-      // Find the task by ID and check if it exists
+
       const task = await Task.findById(input.taskId);
   
       if (!task) {
         return { success: false, error: "Task not found" };
       }
   
-      // Verify if the user is authorized to edit the task
+      
       if (task.user.toString() !== input.user.toString()) {
         return { success: false, error: "You are not authorized to edit this task" };
       }
   
-      // Update the task fields
+      
       task.title = input.title;
       task.description = input.description;
       task.dueDate = input.dueDate;
       task.priority = input.priority;
       task.isCompleted = input.isCompleted;
+      task.location.latitude=input.latitude;
+      task.location.longitude=input.latitude;
   
       // Save and return the updated task
       const updatedTask = await task.save();
