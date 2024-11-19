@@ -55,6 +55,7 @@ export default function Dashboard() {
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null); // Loader for specific delete
   const [error, setError] = useState<string | null>(null);
   const BASE = process.env.NEXT_PUBLIC_BASE_URL;
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   const { filter, setFilter } = useTaskFilter();
@@ -138,6 +139,11 @@ export default function Dashboard() {
     } finally {
       setDeletingTaskId(null);
     }
+  };
+
+
+  const handleToggle = () => {
+    setIsTooltipOpen((prev) => !prev);
   };
 
   const filteredTasks =
@@ -247,9 +253,9 @@ export default function Dashboard() {
                     </Button>
                   </Link>
                   <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="outline">
+                    <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen}>
+                      <TooltipTrigger asChild >
+                        <Button variant="outline"  onClick={handleToggle}>
                           <MapPin />
                         </Button>
                       </TooltipTrigger>
