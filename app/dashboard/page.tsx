@@ -54,8 +54,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true); // Loader for fetching tasks
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null); // Loader for specific delete
   const [error, setError] = useState<string | null>(null);
+  const [openTaskIndex, setOpenTaskIndex] = useState<number | null>(null); 
   const BASE = process.env.NEXT_PUBLIC_BASE_URL;
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   const { filter, setFilter } = useTaskFilter();
@@ -142,10 +142,10 @@ export default function Dashboard() {
   };
 
 
-  const handleToggle = () => {
-    setIsTooltipOpen((prev) => !prev);
-  };
 
+  const handleToggle = (index:number) => {
+    setOpenTaskIndex((prevIndex) => (prevIndex === index ? null : index)); // Toggle the clicked task's tooltip
+  };
   const filteredTasks =
     tasks &&
     tasks.length > 0 &&
@@ -206,7 +206,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-4">
           {filteredTasks &&
             filteredTasks.length > 0 &&
-            filteredTasks.map((item: ITask) => (
+            filteredTasks.map((item: ITask,index:number) => (
               <Card
                 key={item._id}
                 className={`flex flex-col p-4 border-l-8 ${
@@ -253,9 +253,14 @@ export default function Dashboard() {
                     </Button>
                   </Link>
                   <TooltipProvider>
-                    <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen}>
+                    <Tooltip   open={openTaskIndex === index}
+            onOpenChange={(isOpen) => {
+              if (!isOpen && openTaskIndex === index) {
+                setOpenTaskIndex(null);
+              }
+            }}>
                       <TooltipTrigger asChild >
-                        <Button variant="outline"  onClick={handleToggle}>
+                        <Button variant="outline"  onClick={() => handleToggle(index)}>
                           <MapPin />
                         </Button>
                       </TooltipTrigger>
